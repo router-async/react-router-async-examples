@@ -608,6 +608,14 @@ babel-plugin-transform-strict-mode@^6.8.0:
     babel-runtime "^6.0.0"
     babel-types "^6.8.0"
 
+babel-polyfill:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.16.0.tgz#2d45021df87e26a374b6d4d1a9c65964d17f2422"
+  dependencies:
+    babel-runtime "^6.9.1"
+    core-js "^2.4.0"
+    regenerator-runtime "^0.9.5"
+
 babel-preset-es2015-node6@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/babel-preset-es2015-node6/-/babel-preset-es2015-node6-0.3.0.tgz#4288efd10eb43505c9df6c692b46b263d0459b92"

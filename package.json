@@ -11,6 +11,7 @@
     "dev": "yarn run dev:client & yarn run dev:server & wait"
   },
   "dependencies": {
+    "babel-polyfill": "^6.16.0",
     "express": "^4.14.0",
     "history": "^4.3.0",
     "react": "^15.3.2",
