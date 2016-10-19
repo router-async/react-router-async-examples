@@ -15,7 +15,7 @@
     "history": "^4.3.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-router-async": "0.0.1"
+    "react-router-async": "0.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
