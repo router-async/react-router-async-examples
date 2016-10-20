@@ -29,14 +29,13 @@ expressApp.use((req, res, next) => {
 
     let path = req.path.replace('/universal', '');
     path = path === '' ? '/' : path;
-    console.log('path', path);
 
-    Router.init({ path, routes, hooks }).then(({ Component, status, redirect }) => {
+    Router.init({ path, routes, hooks }).then(({ Component, props, status, redirect }) => {
         if (redirect) {
             res.redirect(status, redirect);
         } else {
             const html = ReactDOM.renderToStaticMarkup(HtmlComponent({
-                markup: ReactDOM.renderToString(<Component />),
+                markup: ReactDOM.renderToString(<Component router={props} />),
                 assets: assets
             }));
             console.log('Sending markup');

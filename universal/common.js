@@ -1,5 +1,7 @@
 import React from 'react';
-import { RootRoute, Route, Middleware, Redirect, Link } from 'react-router-async';
+import { RootRoute, Route, Middleware, Redirect, Link, RouterError } from 'react-router-async';
+import hookFetcher from 'hook-fetcher';
+import fetch from 'isomorphic-fetch';
 
 const Home = () => (
     <div>
@@ -9,8 +11,8 @@ const Home = () => (
             <li><Link to="/param/123">param 123</Link></li>
             <li><Link to="/poteryashka">broken</Link></li>
             <li><Link to="/redirect">redirect</Link></li>
-            <li><Link to="/news">middleware root</Link></li>
-            <li><Link to="/news/456">child route</Link></li>
+            <li><Link to="/users">middleware root</Link></li>
+            <li><Link to="/users/2342342342342342134231421342134">broken from api</Link></li>
         </ul>
     </div>
 );
@@ -23,17 +25,35 @@ const Param = () => (
     <div>Route with param</div>
 );
 
-const NotFound = () => (
+export const NotFound = () => (
     <div>Not Found Component</div>
 );
 
-const News = () => (
-    <div>Welcome to news!</div>
+const Users = props => (
+    <div>
+        Welcome to users list!
+        <ul>
+            {props.router.ctx.fetcher.data.users.map(({ login }) => (
+                <li key={login}>
+                    <Link to={`/users/${login}`}>{login}</Link>
+                </li>
+            ))}
+        </ul>
+    </div>
 );
 
-const NewsItem = () => (
-    <div>Welcome to news item!</div>
+const User = props => (
+    <div>{`Welcome to ${props.router.ctx.fetcher.data && props.router.ctx.fetcher.data.user ? props.router.ctx.fetcher.data.user.login : ':('} user!`}</div>
 );
+
+function get(url) {
+    return fetch(url).then(response => {
+        if (response.status >= 400) {
+            throw new Error('Bad response from server');
+        }
+        return response.json();
+    });
+}
 
 export const routes = (
     <RootRoute>
@@ -42,26 +62,40 @@ export const routes = (
         <Route path="/param/:id" action={() => Param} />
         <Redirect path="/redirect" to="/redirect-next" />
         <Redirect path="/redirect-next" to="/param/123" />
-        <Middleware path="/news" action={async ({ next }, options) => {
-            console.log('middleware start');
+        <Middleware path="/users" action={async ({ next }, options) => {
+            {/*console.log('middleware start');*/}
             const result = await next(options);
-            console.log('middleware end');
+            {/*console.log('middleware end');*/}
             return result;
         }}>
-            <Route path="/" action={() => News} />
-            <Route path=":id" action={() => NewsItem} />
+            <Route path="/" action={({ ctx }) => {
+                ctx.fetcher.items.push({
+                    promise: async () => {
+                        const users = await get('https://api.github.com/users');
+                        ctx.fetcher.data ? ctx.fetcher.data.users = users : ctx.fetcher.data = { users };
+                    }
+                });
+                return Users;
+            }} />
+            <Route path=":login" action={({ ctx }) => {
+                ctx.fetcher.items.push({
+                    promise: async ({ params }) => {
+                        try {
+                            const user = await get(`https://api.github.com/users/${params.login}`);
+                            ctx.fetcher.data ? ctx.fetcher.data.user = user : ctx.fetcher.data = { user };
+                        } catch (error) {
+                            throw error;
+                        }
+                    },
+                    critical: true
+                });
+                return User;
+            }} />
         </Middleware>
         <Route path="*" status={404} action={() => NotFound} />
     </RootRoute>
 );
 
 export const hooks = [
-    /*
-    {
-        start: () => console.log('start hook'),
-        match: ({ route, params, ctx }) => console.log('match hook', route, params, ctx),
-        resolve: () => console.log('resolve hook'),
-        render: () => console.log('render hook')
-    }
-    */
+    hookFetcher()
 ];
