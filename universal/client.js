@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from 'react-router-async';
-import { routes, hooks, NotFound } from './common';
+import { routes, hooks, Error } from './common';
 import createHistory from 'history/createBrowserHistory';
 
 const history = createHistory({
@@ -9,10 +9,13 @@ const history = createHistory({
 });
 
 const errorHandler = (error, router) => {
-    console.log('Handle error', error, router);
+    console.log('ERROR HANDLER', error);
     if (error.name === 'RouterError') {
         router.setState({
-            Component: NotFound
+            Component: Error,
+            props: {
+                error
+            }
         })
     } else {
         console.error('Internal Error', error);

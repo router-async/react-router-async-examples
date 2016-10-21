@@ -44,7 +44,7 @@ expressApp.use((req, res, next) => {
     }).catch(error => {
         console.log('ERROR', error);
         if (error.name === 'RouterError') {
-            res.status(error.code).send(error.message);
+            res.status(error.status).send(error.message);
         } else {
             res.status(500).send('Internal error');
         }
