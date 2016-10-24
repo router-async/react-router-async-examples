@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RootRoute, Route, Middleware, Redirect, Link, RouterError } from 'react-router-async';
-import hookFetcher from 'hook-fetcher';
+import { hookFetcher, fetcher } from 'hook-fetcher';
 import fetch from 'isomorphic-fetch';
 
 class Home extends Component {
@@ -47,21 +47,23 @@ export class Error extends Component {
     }
 }
 
-class Users extends Component {
-    constructor({ router }) {
-        super();
-        console.log('CONSTRUCTOR');
-        router.ctx.get('fetcher').callback = () => {
-            this.forceUpdate();
+@fetcher([
+    {
+        promise: () => get (`https://api.github.com/users`),
+        deferred: true,
+        data: {
+            key: 'users',
+            value: []
         }
     }
+])
+class Users extends Component {
     render() {
-        const { router } = this.props;
         return (
             <div>
                 Welcome to users list!
                 <ul>
-                    {router.ctx.get('fetcher').data.get('users').map(({ login }) => (
+                    {this.props.data.users.map(({ login }) => (
                         <li key={login}>
                             <Link to={`/users/${login}`}>{login}</Link>
                         </li>
@@ -72,9 +74,19 @@ class Users extends Component {
     }
 }
 
-const User = ({ router }) => (
-    <div>{`Welcome to ${router.ctx.get('fetcher').data.get('user')} user!`}</div>
+const User = ({ data }) => (
+    <div>{`Welcome to ${data.user.login} user!`}</div>
 );
+const UserWithFetcher = fetcher([
+    {
+        promise: ({ params }) => get(`https://api.github.com/users/${params.login}`),
+        critical: true,
+        data: {
+            key: 'user',
+            value: {}
+        }
+    }
+])(User);
 
 const Secret = () => <div>You get access to secret</div>;
 
@@ -85,7 +97,7 @@ function get(url) {
         }
         return response.json();
     });
-};
+}
 
 export const routes = (
     <RootRoute>
@@ -94,28 +106,8 @@ export const routes = (
         <Route path="/param/:id" action={() => Param} />
         <Redirect path="/redirect" to="/redirect-next" />
         <Redirect path="/redirect-next" to="/param/123" />
-        <Route path="/users" action={({ ctx }) => {
-            ctx.get('fetcher').data.setInitVal('users', []);
-            ctx.get('fetcher').items.push({
-                promise: async () => {
-                    const users = await get('https://api.github.com/users');
-                    ctx.get('fetcher').data.set('users', users);
-                },
-                deferred: true
-            });
-            return Users;
-        }} />
-        <Route path="/users/:login" action={({ ctx }) => {
-            ctx.get('fetcher').data.setInitVal('users', {});
-            ctx.get('fetcher').items.push({
-                promise: async ({ params }) => {
-                    const user = await get(`https://api.github.com/users/${params.login}`);
-                    ctx.get('fetcher').data.set('user', user);
-                },
-                critical: true
-            });
-            return User;
-        }} />
+        <Route path="/users" action={() => Users} />
+        <Route path="/users/:login" action={() => UserWithFetcher} />
         <Middleware path="/secret" action={async (next, options) => {
             if (localStorage.getItem('access') === 'false') {
                 throw new RouterError('Access Forbidden', 403);

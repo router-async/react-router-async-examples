@@ -50,6 +50,9 @@ const commonServer = [{
         presets: [
             'react',
             'latest-node6'
+        ],
+        plugins: [
+            'transform-decorators-legacy'
         ]
     }
 }];
@@ -73,6 +76,7 @@ const config = {
                     'latest'
                 ],
                 plugins : [
+                    'transform-decorators-legacy',
                     [
                         'react-transform',
                         {

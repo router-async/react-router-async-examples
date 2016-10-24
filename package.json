@@ -11,18 +11,20 @@
     "dev": "yarn run dev:client & yarn run dev:server & wait"
   },
   "dependencies": {
-    "babel-polyfill": "^6.16.0",
-    "express": "^4.14.0",
-    "history": "^4.3.0",
-    "isomorphic-fetch": "^2.2.1",
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "react-router-async": "0.0.3"
+    "express": "4.x.x",
+    "history": "4.x.x",
+    "hook-fetcher": "0.0.1",
+    "isomorphic-fetch": "2.x.x",
+    "react": "15.x.x",
+    "react-dom": "15.x.x",
+    "react-router-async": "0.1.x"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-polyfill": "^6.16.0",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-latest-node6": "^0.1.0",
     "babel-preset-react": "^6.16.0",
