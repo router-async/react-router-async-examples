@@ -1783,9 +1783,9 @@ home-or-tmp@^1.0.0:
     os-tmpdir "^1.0.1"
     user-home "^1.1.1"
 
-hook-fetcher@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/hook-fetcher/-/hook-fetcher-0.0.1.tgz#95ce43c30043f3afecbed95b226d65769620bfba"
+hook-fetcher@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/hook-fetcher/-/hook-fetcher-0.0.3.tgz#30ec6c5bed1569642ed3d3ca4ce09842eb0c71b7"
   dependencies:
     react "15.x.x"
 
