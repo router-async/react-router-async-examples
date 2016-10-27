@@ -13,7 +13,7 @@
   "dependencies": {
     "express": "4.x.x",
     "history": "4.x.x",
-    "hook-fetcher": "0.0.3",
+    "hook-fetcher": "0.0.4",
     "hook-redux": "0.0.1",
     "isomorphic-fetch": "2.x.x",
     "react": "15.x.x",
