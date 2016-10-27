@@ -1,8 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from 'react-router-async';
-import { routes, hooks, Error } from './common';
+import { routes, hooks, Error, createStore } from './common';
 import createHistory from 'history/createBrowserHistory';
+import { Provider } from 'react-redux';
+import { hookRedux } from 'hook-redux';
+import { hookFetcher } from 'hook-fetcher';
+
+const store = createStore(window.__data);
+const clientHooks = [
+    ...hooks,
+    hookFetcher({ helpers: { dispatch: store.dispatch } }),
+    hookRedux({ dispatch: store.dispatch })
+];
 
 const history = createHistory({
     basename: '/universal'
@@ -21,7 +31,13 @@ const errorHandler = (error, router) => {
         console.error('Internal Error', error);
     }
 };
+
 const mountNode = document.getElementById('app');
-Router.init({ path: history.location.pathname, routes, hooks }).then(({ Router, Component, router, props, callback }) => {
-    ReactDOM.render(<Router {...{ Component, router, history, props, errorHandler }} />, mountNode, callback);
+const path = history.location.pathname;
+Router.init({ path, routes, hooks: clientHooks, silent: true }).then(({ Router, Component, router, props, callback }) => {
+    ReactDOM.render((
+        <Provider store={store} key="provider">
+            <Router {...{ Component, router, history, props, errorHandler }} />
+        </Provider>
+    ), mountNode, callback);
 }).catch(error => console.log('Router.init', error));

@@ -14,10 +14,16 @@
     "express": "4.x.x",
     "history": "4.x.x",
     "hook-fetcher": "0.0.3",
+    "hook-redux": "0.0.1",
     "isomorphic-fetch": "2.x.x",
     "react": "15.x.x",
     "react-dom": "15.x.x",
-    "react-router-async": "0.1.x"
+    "react-redux": "4.x.x",
+    "react-router-async": "0.2.x",
+    "redux": "3.x.x",
+    "redux-logger": "2.x.x",
+    "redux-thunk": "2.x.x",
+    "serialize-javascript": "1.x.x"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",
@@ -28,6 +34,7 @@
     "babel-preset-latest": "^6.16.0",
     "babel-preset-latest-node6": "^0.1.0",
     "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-3": "^6.17.0",
     "clean-webpack-plugin": "^0.1.13",
     "daemon-command-webpack-plugin": "^1.3.0",
     "extract-text-webpack-plugin": "^1.0.1",

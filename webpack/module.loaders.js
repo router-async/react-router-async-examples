@@ -49,7 +49,8 @@ const commonServer = [{
         cacheDirectory: global.webpack.development,
         presets: [
             'react',
-            'latest-node6'
+            'latest-node6',
+            'stage-3'
         ],
         plugins: [
             'transform-decorators-legacy'
@@ -73,7 +74,8 @@ const config = {
                 cacheDirectory: global.webpack.development,
                 presets : [
                     'react',
-                    'latest'
+                    'latest',
+                    'stage-3'
                 ],
                 plugins : [
                     'transform-decorators-legacy',

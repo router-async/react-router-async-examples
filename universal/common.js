@@ -1,44 +1,32 @@
 import React, { Component } from 'react';
-import { RootRoute, Route, Middleware, Redirect, Link, RouterError } from 'react-router-async';
-import { hookFetcher, fetcher } from 'hook-fetcher';
+import { RootRoute, Route, Redirect, Link, RouterError } from 'react-router-async';
+import { fetcher } from 'hook-fetcher';
 import fetch from 'isomorphic-fetch';
+import { createStore as _createStore, combineReducers, applyMiddleware } from 'redux';
+import { reducer as routerReducer } from 'hook-redux';
+import { connect } from 'react-redux';
+import thunk from 'redux-thunk';
 
-class Home extends Component {
-    componentDidMount() {
-        localStorage.setItem('access', false);
-    }
-    changeAccess(e) {
-        localStorage.setItem('access', e.target.checked);
-    }
-    render() {
-        return (
-            <div>
-                <p>Home. Here some links for you:</p>
-                <p>Grant access <input type="checkbox" onChange={this.changeAccess} defaultChecked={false} /></p>
-                <ul>
-                    <li><Link to="/test">Test</Link></li>
-                    <li><Link to="/param/123">With param 123</Link></li>
-                    <li><Link to="/poteryashka">Broken (Not Found)</Link></li>
-                    <li><Link to="/redirect">Redirect</Link></li>
-                    <li><Link to="/users">GitHub Users (deffered)</Link></li>
-                    <li><Link to="/users/2342342342342342134231421342134">Broken from api (Not Found)</Link></li>
-                    <li><Link to="/secret">Secret with access rights</Link></li>
-                </ul>
-            </div>
-        )
-    }
-}
+const Home = () => (
+    <div>
+        <p>Home. Here some links for you:</p>
+        <ul>
+            <li><Link to="/test">Test</Link></li>
+            <li><Link to="/param/123">With param 123</Link></li>
+            <li><Link to="/poteryashka">Broken (Not Found)</Link></li>
+            <li><Link to="/redirect">Redirect</Link></li>
+            <li><Link to="/users">GitHub Users (deffered)</Link></li>
+            <li><Link to="/users/2342342342342342134231421342134">Broken from api (Not Found)</Link></li>
+        </ul>
+    </div>
+);
 
-const  Test = () => (
+const Test = () => (
     <div>Test, go to <Link to="/">home</Link></div>
 );
 
 const Param = props => (
     <div>{`Route with param: ${props.router.params.id}`}</div>
-);
-
-export const NotFound = props => (
-    <div>Error Component</div>
 );
 
 export class Error extends Component {
@@ -49,14 +37,13 @@ export class Error extends Component {
 
 @fetcher([
     {
-        promise: () => get (`https://api.github.com/users`),
-        deferred: true,
-        data: {
-            key: 'users',
-            value: []
-        }
+        promise: ({ helpers: { dispatch } }) => dispatch(requestUsers()),
+        deferred: true
     }
 ])
+@connect(state => ({
+    data: state.data
+}))
 class Users extends Component {
     render() {
         return (
@@ -74,21 +61,46 @@ class Users extends Component {
     }
 }
 
-const User = ({ data }) => (
-    <div>{`Welcome to ${data.user.login} user!`}</div>
-);
-const UserWithFetcher = fetcher([
+@fetcher([
     {
-        promise: ({ params }) => get(`https://api.github.com/users/${params.login}`),
-        critical: true,
-        data: {
-            key: 'user',
-            value: {}
-        }
+        promise: ({ params, helpers: { dispatch } }) => dispatch(requestUser(params))
     }
-])(User);
+])
+@connect(state => ({
+    data: state.data
+}))
+class User extends Component {
+    render() {
+        return (
+            <div>{`Welcome to ${this.props.data.user.login} user!`}</div>
+        )
+    }
+}
 
-const Secret = () => <div>You get access to secret</div>;
+function requestUsers() {
+    return dispatch => {
+        dispatch({type: 'REQUEST_USERS'});
+        return get(`https://api.github.com/users`)
+            .then(result => {
+                dispatch({type: 'REQUEST_USERS_SUCCESS', payload: result});
+            })
+            .catch(error => {
+                dispatch({type: 'REQUEST_USERS_ERROR', payload: error});
+            })
+    }
+}
+function requestUser(params) {
+    return dispatch => {
+        dispatch({type: 'REQUEST_USER'});
+        return get(`https://api.github.com/users/${params.login}`)
+            .then(result => {
+                dispatch({type: 'REQUEST_USER_SUCCESS', payload: result});
+            })
+            .catch(error => {
+                dispatch({type: 'REQUEST_USER_ERROR', payload: error});
+            })
+    }
+}
 
 function get(url) {
     return fetch(url).then(response => {
@@ -99,6 +111,39 @@ function get(url) {
     });
 }
 
+export const reducers = combineReducers({
+    router: routerReducer,
+    data: (state = { users: [], user: null }, action) => {
+        switch (action.type) {
+            case 'REQUEST_USER_SUCCESS':
+                return {
+                    ...state,
+                    user: action.payload
+                };
+            case 'REQUEST_USERS_SUCCESS':
+                return {
+                    ...state,
+                    users: action.payload
+                };
+            default:
+                return state;
+        }
+    }
+});
+
+export const createStore = data => {
+    const middleware = [thunk];
+    if (__CLIENT__ && __DEVELOPMENT__) {
+        const createLogger = require('redux-logger');
+        const logger = createLogger({
+            duration: true
+        });
+        middleware.push(logger);
+    }
+    let createStoreWithMiddleware = applyMiddleware(...middleware)(_createStore);
+    return createStoreWithMiddleware(reducers, data);
+};
+
 export const routes = (
     <RootRoute>
         <Route path="/" action={() => Home} />
@@ -107,21 +152,8 @@ export const routes = (
         <Redirect path="/redirect" to="/redirect-next" />
         <Redirect path="/redirect-next" to="/param/123" />
         <Route path="/users" action={() => Users} />
-        <Route path="/users/:login" action={() => UserWithFetcher} />
-        <Middleware path="/secret" action={async (next, options) => {
-            if (localStorage.getItem('access') === 'false') {
-                throw new RouterError('Access Forbidden', 403);
-            }
-            const result = await next(options);
-            console.log('middleware end');
-            return result;
-        }}>
-            <Route path="/" action={() => Secret} />
-        </Middleware>
-        {/*<Route path="*" status={404} action={() => NotFound} />*/}
+        <Route path="/users/:login" action={() => User} />
     </RootRoute>
 );
 
-export const hooks = [
-    hookFetcher()
-];
+export const hooks = [];

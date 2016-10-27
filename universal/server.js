@@ -1,11 +1,13 @@
 import express from 'express';
 import { Router } from 'react-router-async';
-import { routes, hooks } from './common';
+import { routes, hooks, createStore } from './common';
 import React, { Component, createFactory } from 'react';
 import ReactDOM from 'react-dom/server';
 import assets from './../webpack-assets.json';
-
-let expressApp = express();
+import { hookRedux } from 'hook-redux';
+import { hookFetcher } from 'hook-fetcher';
+import { Provider } from 'react-redux';
+import serialize from 'serialize-javascript';
 
 class Html extends Component {
     render() {
@@ -17,6 +19,7 @@ class Html extends Component {
                 <body>
                     <div id="app" dangerouslySetInnerHTML={{__html: this.props.markup}}></div>
                     <script src={this.props.assets.javascript.universal} defer></script>
+                    <script dangerouslySetInnerHTML={{__html: this.props.state}}></script>
                 </body>
             </html>
         )
@@ -24,19 +27,31 @@ class Html extends Component {
 }
 const HtmlComponent = createFactory(Html);
 
-expressApp.use((req, res, next) => {
+const renderMiddleware = (req, res) => {
     console.log('Incoming request', req.path);
-
     let path = req.path.replace('/universal', '');
     path = path === '' ? '/' : path;
 
-    Router.init({ path, routes, hooks }).then(({ Component, props, status, redirect }) => {
+    const store = createStore();
+    const serverHooks = [
+        ...hooks,
+        hookFetcher({ helpers: { dispatch: store.dispatch } }),
+        hookRedux({ dispatch: store.dispatch })
+    ];
+
+    Router.init({ path, routes, hooks: serverHooks }).then(({ Component, props, status, redirect }) => {
         if (redirect) {
             res.redirect(status, redirect);
         } else {
+            let exposed = 'window.__data=' + serialize(store.getState()) + ';';
             const html = ReactDOM.renderToStaticMarkup(HtmlComponent({
-                markup: ReactDOM.renderToString(<Component router={props} />),
-                assets: assets
+                markup: ReactDOM.renderToString((
+                    <Provider store={store} key="provider">
+                        <Component router={props} />
+                    </Provider>
+                )),
+                assets: assets,
+                state: exposed
             }));
             console.log('Sending markup');
             res.status(status).send('<!DOCTYPE html>' + html);
@@ -49,8 +64,10 @@ expressApp.use((req, res, next) => {
             res.status(500).send('Internal error');
         }
     });
-});
+};
 
+const expressApp = express();
+expressApp.use(renderMiddleware);
 expressApp.listen(process.env.PORT, function() {
     console.log('Listening on => ' + process.env.PORT);
 });
