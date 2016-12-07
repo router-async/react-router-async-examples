@@ -47,7 +47,10 @@ const renderMiddleware = (req, res) => {
             const html = ReactDOM.renderToStaticMarkup(HtmlComponent({
                 markup: ReactDOM.renderToString((
                     <Provider store={store} key="provider">
-                        <Component router={props} />
+                        <div>
+                            <h1>Wrapper</h1>
+                            <Component router={props} />
+                        </div>
                     </Provider>
                 )),
                 assets: assets,

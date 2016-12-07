@@ -72,7 +72,7 @@ class Users extends Component {
 class User extends Component {
     render() {
         return (
-            <div>{`Welcome to ${this.props.data.user.login} user!`}</div>
+            <div>{`Welcome to ${this.props.data.user && this.props.data.user.login} user!`}</div>
         )
     }
 }
