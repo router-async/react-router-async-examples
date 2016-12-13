@@ -27,7 +27,7 @@ class Home extends Component {
     }
 }
 const Secret = () => <div>You get access to secret</div>;
-const Test = () => <div>Test, go to <Link to="/">home</Link></div>;
+const Test = props => <div>Test, go to <Link to="/">home</Link>{ console.log('props', props) }</div>;
 
 const routes = [
     <Route path="/" action={() => Home} />,
