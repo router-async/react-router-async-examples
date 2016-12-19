@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, PlaceHolder } from 'react-router-async';
+import { BrowserRouter, PlaceHolder } from 'react-router-async';
 import { routes, hooks, Error, createStore } from './common';
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
@@ -21,7 +21,7 @@ const history = createHistory({
 const errorHandler = (error, router) => {
     console.log('ERROR HANDLER', error);
     if (error.name === 'RouterError') {
-        router.changeComponent(Error, { error });
+        router.replaceComponent(Error, { error });
     } else {
         console.error('Internal Error', error);
     }
@@ -30,13 +30,13 @@ const errorHandler = (error, router) => {
 const mountNode = document.getElementById('app');
 const path = history.location.pathname;
 // TODO: move silent to fetcher options, move all Router props to single props object(move history to init)
-Router.init({ path, routes, hooks: clientHooks, silent: true }).then(({ Router, Component, router, props, callback }) => {
+BrowserRouter.init({ path, routes, hooks: clientHooks, history, silent: true }).then(({ Router, routerProps, Component, componentProps, callback }) => {
     ReactDOM.render((
         <Provider store={store} key="provider">
-            <Router {...{ router, history, errorHandler }}>
+            <Router {...{...routerProps, errorHandler}}>
                 <div>
                     <h1>Wrapper</h1>
-                    <PlaceHolder {...{ Component, props }} />
+                    <PlaceHolder {...{ Component, componentProps }} />
                 </div>
             </Router>
         </Provider>

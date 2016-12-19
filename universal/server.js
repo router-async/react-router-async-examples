@@ -1,5 +1,5 @@
 import express from 'express';
-import { Router } from 'react-router-async';
+import { ServerRouter } from 'react-router-async';
 import { routes, hooks, createStore } from './common';
 import React, { Component, createFactory } from 'react';
 import ReactDOM from 'react-dom/server';
@@ -39,7 +39,7 @@ const renderMiddleware = (req, res) => {
         hookRedux({ dispatch: store.dispatch })
     ];
 
-    Router.init({ path, routes, hooks: serverHooks }).then(({ Component, props, status, redirect }) => {
+    ServerRouter.init({ path, routes, hooks: serverHooks }).then(({ Router, routerProps, Component, componentProps, status, redirect }) => {
         if (redirect) {
             res.redirect(status, redirect);
         } else {
@@ -47,10 +47,12 @@ const renderMiddleware = (req, res) => {
             const html = ReactDOM.renderToStaticMarkup(HtmlComponent({
                 markup: ReactDOM.renderToString((
                     <Provider store={store} key="provider">
-                        <div>
-                            <h1>Wrapper</h1>
-                            <Component router={props} />
-                        </div>
+                        <Router {...routerProps}>
+                            <div>
+                                <h1>Wrapper</h1>
+                                <Component {...componentProps} />
+                            </div>
+                        </Router>
                     </Provider>
                 )),
                 assets: assets,

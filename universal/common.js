@@ -22,7 +22,7 @@ const Home = () => (
 );
 
 const Test = () => (
-    <div>Test, go to <Link to="/">home</Link></div>
+    <div>Test, go to <Link to="/" activeClassName="active" activeOnlyWhenExact={true}>home</Link>. Show me <Link to="/test" activeClassName="active">active link</Link></div>
 );
 
 const Param = props => (
@@ -31,7 +31,7 @@ const Param = props => (
 
 export class Error extends Component {
     render () {
-        return <div>Error Component: {this.props.router.error.message}</div>
+        return <div>Error Component: {this.props.error.message}</div>
     }
 }
 
