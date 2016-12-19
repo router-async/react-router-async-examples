@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, Middleware, Link, RouterError } from 'react-router-async';
+import { BrowserRouter, Route, Middleware, Link, RouterError } from 'react-router-async';
 import createHistory from 'history/createBrowserHistory';
 
 const history = createHistory({
@@ -54,6 +54,6 @@ const hooks = [
 ];
 
 const mountNode = document.getElementById('app');
-Router.init({ path: history.location.pathname, routes, hooks }).then(({ Router, Component, router, callback }) => {
-    ReactDOM.render(<Router {...{ Component, router, history }} />, mountNode, callback);
+BrowserRouter.init({ path: history.location.pathname, routes, hooks, history }).then(({ Router, routerProps, callback }) => {
+    ReactDOM.render(<Router {...routerProps} />, mountNode, callback);
 }).catch(error => console.log('Router.init', error));
