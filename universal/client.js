@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, PlaceHolder } from 'react-router-async';
+import { BrowserRouter, Placeholder } from 'react-router-async';
 import { routes, hooks, Error, createStore } from './common';
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
@@ -36,7 +36,7 @@ BrowserRouter.init({ path, routes, hooks: clientHooks, history, silent: true }).
             <Router {...{...routerProps, errorHandler}}>
                 <div>
                     <h1>Wrapper</h1>
-                    <PlaceHolder {...{ Component, componentProps }} />
+                    <Placeholder {...{ Component, componentProps }} />
                 </div>
             </Router>
         </Provider>

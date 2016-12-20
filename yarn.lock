@@ -2845,9 +2845,9 @@ react-redux@4.x.x:
     lodash "^4.2.0"
     loose-envify "^1.1.0"
 
-react-router-async@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-router-async/-/react-router-async-0.4.0.tgz#831f6ca8d81e3559a476e9904cf9d554314d0607"
+react-router-async@0.5.x:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-router-async/-/react-router-async-0.5.0.tgz#1b39e31e26f417a35e35ff7361d07b4384f78522"
   dependencies:
     react "15.x.x"
     router-async "0.2.x"
