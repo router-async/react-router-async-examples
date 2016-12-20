@@ -1779,8 +1779,8 @@ hook-fetcher@0.0.x:
     react "15.x.x"
 
 hook-redux@0.0.x:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/hook-redux/-/hook-redux-0.0.3.tgz#82fb7480ee6566822828ca0dc644dd8a3116ea0e"
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/hook-redux/-/hook-redux-0.0.4.tgz#7409506b14324d30c5ea2a3ee0b9051e7e23e5b4"
   dependencies:
     redux-actions-helpers "1.x.x"
 
@@ -2846,8 +2846,8 @@ react-redux@4.x.x:
     loose-envify "^1.1.0"
 
 react-router-async@0.5.x:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/react-router-async/-/react-router-async-0.5.0.tgz#1b39e31e26f417a35e35ff7361d07b4384f78522"
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-router-async/-/react-router-async-0.5.1.tgz#15f18ece9c456033cbbcfecc2f7373c8f7795e7b"
   dependencies:
     react "15.x.x"
     router-async "0.2.x"

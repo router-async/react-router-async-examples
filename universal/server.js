@@ -1,6 +1,6 @@
 import express from 'express';
 import { ServerRouter } from 'react-router-async';
-import { routes, hooks, createStore } from './common';
+import { routes, hooks, createStore, Wrapper } from './common';
 import React, { Component, createFactory } from 'react';
 import ReactDOM from 'react-dom/server';
 import assets from './../webpack-assets.json';
@@ -48,10 +48,9 @@ const renderMiddleware = (req, res) => {
                 markup: ReactDOM.renderToString((
                     <Provider store={store} key="provider">
                         <Router {...routerProps}>
-                            <div>
-                                <h1>Wrapper</h1>
+                            <Wrapper>
                                 <Component {...componentProps} />
-                            </div>
+                            </Wrapper>
                         </Router>
                     </Provider>
                 )),

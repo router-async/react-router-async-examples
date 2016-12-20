@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Placeholder } from 'react-router-async';
-import { routes, hooks, Error, createStore } from './common';
+import { routes, hooks, Error, createStore, Wrapper } from './common';
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
 import { hookRedux } from 'hook-redux';
@@ -34,10 +34,9 @@ BrowserRouter.init({ path, routes, hooks: clientHooks, history, silent: true }).
     ReactDOM.render((
         <Provider store={store} key="provider">
             <Router {...{...routerProps, errorHandler}}>
-                <div>
-                    <h1>Wrapper</h1>
+                <Wrapper>
                     <Placeholder {...{ Component, componentProps }} />
-                </div>
+                </Wrapper>
             </Router>
         </Provider>
     ), mountNode, callback);

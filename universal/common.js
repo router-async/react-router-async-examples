@@ -35,6 +35,21 @@ export class Error extends Component {
     }
 }
 
+export class Wrapper extends Component {
+    render() {
+        return (
+            <div>
+                <h1>Menu</h1>
+                <ul>
+                    <li><Link to="/" activeClassName="active" activeOnlyWhenExact={true}>home</Link></li>
+                    <li><Link to="/test" activeClassName="active" activeOnlyWhenExact={true}>test</Link></li>
+                </ul>
+                {this.props.children}
+            </div>
+        )
+    }
+}
+
 @fetcher([
     {
         promise: ({ helpers: { dispatch } }) => dispatch(requestUsers()),
