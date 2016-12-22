@@ -28,8 +28,8 @@ class Html extends Component {
 const HtmlComponent = createFactory(Html);
 
 const renderMiddleware = (req, res) => {
-    console.log('Incoming request', req.path);
-    let path = req.path.replace('/universal', '');
+    console.log('Incoming request', req.url);
+    let path = req.url.replace('/universal', '');
     path = path === '' ? '/' : path;
 
     const store = createStore();

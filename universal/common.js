@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { RootRoute, Route, Redirect, Link, RouterError } from 'react-router-async';
 import { fetcher } from 'hook-fetcher';
 import fetch from 'isomorphic-fetch';
@@ -7,19 +7,36 @@ import { reducer as routerReducer } from 'hook-redux';
 import { connect } from 'react-redux';
 import thunk from 'redux-thunk';
 
-const Home = () => (
-    <div>
-        <p>Home. Here some links for you:</p>
-        <ul>
-            <li><Link to="/test">Test</Link></li>
-            <li><Link to="/param/123">With param 123</Link></li>
-            <li><Link to="/poteryashka">Broken (Not Found)</Link></li>
-            <li><Link to="/redirect">Redirect</Link></li>
-            <li><Link to="/users">GitHub Users (deffered)</Link></li>
-            <li><Link to="/users/2342342342342342134231421342134">Broken from api (Not Found)</Link></li>
-        </ul>
-    </div>
-);
+class Home extends Component {
+    static contextTypes = {
+        router: React.PropTypes.object
+    };
+    goTo = e => {
+        this.context.router.push({
+            pathname: '/query',
+            query: {
+                string: 456
+            }
+        });
+    };
+    render() {
+        return (
+            <div>
+                <p>Home. Here some links for you:</p>
+                <ul>
+                    <li><Link to="/test">Test</Link></li>
+                    <li><Link to="/param/123">With param 123</Link></li>
+                    <li><Link to="/query?string=456">With query string=456</Link></li>
+                    <li onClick={this.goTo}>PUSH ME</li>
+                    <li><Link to="/poteryashka">Broken (Not Found)</Link></li>
+                    <li><Link to="/redirect">Redirect</Link></li>
+                    <li><Link to="/users">GitHub Users (deffered)</Link></li>
+                    <li><Link to="/users/2342342342342342134231421342134">Broken from api (Not Found)</Link></li>
+                </ul>
+            </div>
+        );
+    }
+}
 
 const Test = () => (
     <div>Test, go to <Link to="/" activeClassName="active" activeOnlyWhenExact={true}>home</Link>. Show me <Link to="/test" activeClassName="active">active link</Link></div>
@@ -27,6 +44,12 @@ const Test = () => (
 
 const Param = props => (
     <div>{`Route with param: ${props.router.params.id}`}</div>
+);
+
+const Query = props => (
+    <div>
+        {`Route with query: ${props.router.location.search}`}
+    </div>
 );
 
 export class Error extends Component {
@@ -164,6 +187,7 @@ export const routes = (
         <Route path="/" action={() => Home} />
         <Route path="/test" action={() => Test} />
         <Route path="/param/:id" action={() => Param} />
+        <Route path="/query" action={() => Query} />
         <Redirect path="/redirect" to="/redirect-next" />
         <Redirect path="/redirect-next" to="/param/123" />
         <Route path="/users" action={() => Users} />
