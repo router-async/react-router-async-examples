@@ -29,7 +29,7 @@ const errorHandler = (error, router) => {
 
 const mountNode = document.getElementById('app');
 const path = history.location.pathname + history.location.search + history.location.hash;
-// TODO: move silent to fetcher options, move all Router props to single props object(move history to init)
+// TODO: move silent to fetcher options 
 BrowserRouter.init({ path, routes, hooks: clientHooks, history, silent: true }).then(({ Router, routerProps, Component, componentProps, callback }) => {
     ReactDOM.render((
         <Provider store={store} key="provider">
