@@ -1,6 +1,6 @@
 import express from 'express';
 import { ServerRouter } from 'react-router-async';
-import { routes, hooks, createStore, Wrapper } from './common';
+import { routes, hooks, createStore, Wrapper, errors } from './common';
 import React, { Component, createFactory } from 'react';
 import ReactDOM from 'react-dom/server';
 import assets from './../webpack-assets.json';
@@ -39,7 +39,7 @@ const renderMiddleware = (req, res) => {
         hookRedux({ dispatch: store.dispatch })
     ];
 
-    ServerRouter.init({ path, routes, hooks: serverHooks }).then(({ Router, routerProps, Component, componentProps, status, redirect }) => {
+    ServerRouter.init({ path, routes, hooks: serverHooks, errors }).then(({ Router, routerProps, Component, componentProps, status, redirect }) => {
         if (redirect) {
             res.redirect(status, redirect);
         } else {
@@ -62,11 +62,7 @@ const renderMiddleware = (req, res) => {
         }
     }).catch(error => {
         console.log('ERROR', error);
-        if (error.name === 'RouterError') {
-            res.status(error.status).send(error.message);
-        } else {
-            res.status(500).send('Internal error');
-        }
+        res.status(500).send('Internal error');
     });
 };
 

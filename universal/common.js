@@ -28,6 +28,10 @@ class Home extends Component {
                     <li><Link to="/param/123">With param 123</Link></li>
                     <li><Link to="/query?string=456">With query string=456</Link></li>
                     <li onClick={this.goTo}>PUSH ME</li>
+                    <li><Link to="#" onClick={e => {
+                        e.preventDefault();
+                        console.log('custom handler');
+                    }}>Link custom handler</Link></li>
                     <li><Link to="/poteryashka">Broken (Not Found)</Link></li>
                     <li><Link to="/redirect">Redirect</Link></li>
                     <li><Link to="/users">GitHub Users (deffered)</Link></li>
@@ -52,11 +56,14 @@ const Query = props => (
     </div>
 );
 
-export class Error extends Component {
+class Error extends Component {
     render () {
-        return <div>Error Component: {this.props.error.message}</div>
+        return <div>Error Component: {this.props.router.error.message}</div>
     }
 }
+export const errors = {
+    404: Error
+};
 
 export class Wrapper extends Component {
     render() {
