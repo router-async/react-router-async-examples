@@ -28,6 +28,11 @@ class Home extends Component {
 }
 const Secret = () => <div>You get access to secret</div>;
 const Test = props => <div>Test, go to <Link to="/">home</Link>{ console.log('props', props) }</div>;
+const Error = props => <div>{props.router.error.message}</div>;
+
+const errors = {
+    '*': Error
+};
 
 const routes = [
     <Route path="/" action={() => Home} />,
@@ -54,6 +59,7 @@ const hooks = [
 ];
 
 const mountNode = document.getElementById('app');
-BrowserRouter.init({ path: history.location.pathname, routes, hooks, history }).then(({ Router, routerProps, callback }) => {
+// TODO: make errors optional
+BrowserRouter.init({ history, routes, hooks, errors }).then(({ Router, routerProps, callback }) => {
     ReactDOM.render(<Router {...routerProps} />, mountNode, callback);
 }).catch(error => console.log('Router.init', error));
