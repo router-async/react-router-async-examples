@@ -6,7 +6,8 @@ const config = {
     development : [
         ...common,
         new DaemonCommandPlugin('start:dev', {
-            outResolve : /Listening on =>/
+            manager: 'yarn',
+            marker : true
         })
     ],
     production  : [
