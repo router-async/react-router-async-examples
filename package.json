@@ -23,7 +23,7 @@
     "redux": "3.x.x",
     "redux-logger": "2.x.x",
     "redux-thunk": "2.x.x",
-    "router-async": "0.4.x",
+    "router-async": "0.5.x",
     "serialize-javascript": "1.x.x"
   },
   "devDependencies": {

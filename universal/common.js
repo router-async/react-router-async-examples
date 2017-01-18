@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { RootRoute, Route, Redirect, Link, RouterError } from 'react-router-async';
+import { RootRoute, Route, Redirect, Link, RouterError, DynamicRedirect } from 'react-router-async';
 import { fetcher } from 'hook-fetcher';
 import fetch from 'isomorphic-fetch';
 import { createStore as _createStore, combineReducers, applyMiddleware } from 'redux';
@@ -34,6 +34,7 @@ class Home extends Component {
                     }}>Link custom handler</Link></li>
                     <li><Link to="/poteryashka">Broken (Not Found)</Link></li>
                     <li><Link to="/redirect">Redirect</Link></li>
+                    <li><Link to="/redirect-dynamic">Redirect Dynamic</Link></li>
                     <li><Link to="/users">GitHub Users (deffered)</Link></li>
                     <li><Link to="/users/2342342342342342134231421342134">Broken from api (Not Found)</Link></li>
                 </ul>
@@ -197,6 +198,7 @@ export const routes = (
         <Route path="/query" action={() => Query} />
         <Redirect path="/redirect" to="/redirect-next" />
         <Redirect path="/redirect-next" to="/param/123" />
+        <Route path="/redirect-dynamic" action={() => new DynamicRedirect('/param/123')} />
         <Route path="/users" action={() => Users} />
         <Route path="/users/:login" action={() => User} />
     </RootRoute>
