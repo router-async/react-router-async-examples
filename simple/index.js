@@ -39,7 +39,7 @@ const routes = [
     <Route path="/test" action={() => Test} />,
     <Middleware path="/secret" action={async (next, options) => {
         if (localStorage.getItem('access') === 'false') {
-            throw new RouterError('Access Forbidden', 403);
+            return new RouterError('Access Forbidden', 403);
         }
         const result = await next(options);
         console.log('middleware end');

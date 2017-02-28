@@ -6,6 +6,7 @@ import { createStore as _createStore, combineReducers, applyMiddleware } from 'r
 import { reducer as routerReducer } from 'hook-redux';
 import { connect } from 'react-redux';
 import thunk from 'redux-thunk';
+import style from './style.pcss';
 
 class Home extends Component {
     static contextTypes = {
@@ -109,7 +110,8 @@ class Users extends Component {
 
 @fetcher([
     {
-        promise: ({ params, helpers: { dispatch } }) => dispatch(requestUser(params))
+        promise: ({ params, helpers: { dispatch } }) => dispatch(requestUser(params)),
+        critical: true
     }
 ])
 @connect(state => ({
@@ -132,6 +134,7 @@ function requestUsers() {
             })
             .catch(error => {
                 dispatch({type: 'REQUEST_USERS_ERROR', payload: error});
+                throw error;
             })
     }
 }
@@ -144,6 +147,7 @@ function requestUser(params) {
             })
             .catch(error => {
                 dispatch({type: 'REQUEST_USER_ERROR', payload: error});
+                throw error;
             })
     }
 }

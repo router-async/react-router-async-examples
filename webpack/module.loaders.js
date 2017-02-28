@@ -153,7 +153,7 @@ const config = {
             test    : /\.pcss$/,
             loader  : ExtractTextPlugin.extract('style', 'css?sourceMap&localIdentName=[hash:hex]'),
             include : [
-                resolve(global.webpack.context, 'app'),
+                resolve(global.webpack.context, 'universal'),
                 resolve(global.webpack.context, 'dev_modules'),
                 resolve(global.webpack.context, 'node_modules')
             ]
@@ -167,7 +167,7 @@ const config = {
                 test    : /\.pcss$/,
                 loader  : 'css/locals?localIdentName=[local]-[hash:hex:5]',
                 include : [
-                    resolve(global.webpack.context, 'app'),
+                    resolve(global.webpack.context, 'universal'),
                     resolve(global.webpack.context, 'dev_modules'),
                     resolve(global.webpack.context, 'node_modules')
                 ]
@@ -180,7 +180,7 @@ const config = {
                 test    : /\.pcss$/,
                 loader  : 'css/locals?localIdentName=[hash:hex]',
                 include : [
-                    resolve(global.webpack.context, 'app'),
+                    resolve(global.webpack.context, 'universal'),
                     resolve(global.webpack.context, 'dev_modules'),
                     resolve(global.webpack.context, 'node_modules')
                 ]

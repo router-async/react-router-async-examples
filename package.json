@@ -11,11 +11,13 @@
     "dev": "yarn run dev:client & yarn run dev:server & wait"
   },
   "dependencies": {
+    "css-loader": "^0.26.2",
     "express": "4.x.x",
     "history": "4.x.x",
     "hook-fetcher": "0.1.x",
     "hook-redux": "0.0.x",
     "isomorphic-fetch": "2.x.x",
+    "postcss-loader": "^1.3.2",
     "react": "15.x.x",
     "react-dom": "15.x.x",
     "react-redux": "4.x.x",
@@ -23,8 +25,8 @@
     "redux": "3.x.x",
     "redux-logger": "2.x.x",
     "redux-thunk": "2.x.x",
-    "router-async": "0.5.x",
-    "serialize-javascript": "1.x.x"
+    "serialize-javascript": "1.x.x",
+    "style-loader": "^0.13.2"
   },
   "devDependencies": {
     "babel-core": "^6.17.0",

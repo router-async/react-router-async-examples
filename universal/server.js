@@ -2,6 +2,7 @@ import express from 'express';
 import { ServerRouter } from 'react-router-async';
 import { routes, hooks, createStore, Wrapper, errors } from './common';
 import React, { Component, createFactory } from 'react';
+import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 import ReactDOM from 'react-dom/server';
 import assets from './../webpack-assets.json';
 import { hookRedux } from 'hook-redux';
@@ -49,7 +50,17 @@ const renderMiddleware = (req, res) => {
                     <Provider store={store} key="provider">
                         <Router {...routerProps}>
                             <Wrapper>
-                                <Component {...componentProps} />
+                                <ReactCSSTransitionGroup
+                                    component="div"
+                                    className="container"
+                                    transitionName="page"
+                                    transitionEnterTimeout={500}
+                                    transitionLeaveTimeout={300}
+                                >
+                                    <div key={componentProps.router.path} className="content">
+                                        <Component {...componentProps} />
+                                    </div>
+                                </ReactCSSTransitionGroup>
                             </Wrapper>
                         </Router>
                     </Provider>

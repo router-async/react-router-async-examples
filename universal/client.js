@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Placeholder } from 'react-router-async';
 import { routes, hooks, createStore, Wrapper, errors } from './common';
@@ -23,7 +24,21 @@ BrowserRouter.init({ history, routes, hooks: clientHooks, errors }).then(({ Rout
         <Provider store={store} key="provider">
             <Router {...routerProps}>
                 <Wrapper>
-                    <Placeholder {...{ Component, componentProps }} />
+                    <Placeholder render={({ Component, componentProps }) => {
+                        return (
+                            <ReactCSSTransitionGroup
+                                component="div"
+                                className="container"
+                                transitionName="page"
+                                transitionEnterTimeout={500}
+                                transitionLeaveTimeout={300}
+                            >
+                                <div key={componentProps.router.path} className="content">
+                                    <Component {...componentProps} />
+                                </div>
+                            </ReactCSSTransitionGroup>
+                        )
+                    }} />
                 </Wrapper>
             </Router>
         </Provider>
