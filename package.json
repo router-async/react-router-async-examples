@@ -15,7 +15,7 @@
     "express": "4.x.x",
     "history": "4.x.x",
     "hook-fetcher": "0.1.x",
-    "hook-redux": "0.0.x",
+    "hook-redux": "0.1.x",
     "isomorphic-fetch": "2.x.x",
     "postcss-loader": "^1.3.2",
     "react": "15.x.x",

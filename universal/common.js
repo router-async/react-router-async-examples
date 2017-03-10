@@ -38,6 +38,8 @@ class Home extends Component {
                     <li><Link to="/redirect-dynamic">Redirect Dynamic</Link></li>
                     <li><Link to="/users">GitHub Users (deffered)</Link></li>
                     <li><Link to="/users/2342342342342342134231421342134">Broken from api (Not Found)</Link></li>
+                    <li><Link to="/delayed-action-test">Delayed Test</Link></li>
+                    <li><Link to="/delayed-middleware-test">Delayed Test</Link></li>
                 </ul>
             </div>
         );
@@ -205,7 +207,26 @@ export const routes = (
         <Route path="/redirect-dynamic" action={() => new DynamicRedirect('/param/123')} />
         <Route path="/users" action={() => Users} />
         <Route path="/users/:login" action={() => User} />
+        <Route path="/delayed-action-test" action={async () => {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return Test;
+        }} />
+        <Route path="/delayed-middleware-test" action={() => Test} />
     </RootRoute>
 );
 
-export const hooks = [];
+export const hooks = [
+    /*{
+        start: () => console.log('start'),
+        match: () => console.log('match'),
+        resolve: () => console.log('resolve'),
+        render: () => console.log('render'),
+        error: () => console.log('error'),
+        cancel: () => console.log('cancel')
+    },*/
+    {
+        start: async ({ path }) => {
+            if (path === '/delayed-middleware-test') await new Promise(resolve => setTimeout(resolve, 2000))
+        }
+    }
+];

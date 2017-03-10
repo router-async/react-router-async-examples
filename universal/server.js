@@ -1,5 +1,5 @@
 import express from 'express';
-import { ServerRouter } from 'react-router-async';
+import { ServerRouter, Context } from 'react-router-async';
 import { routes, hooks, createStore, Wrapper, errors } from './common';
 import React, { Component, createFactory } from 'react';
 import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
@@ -40,7 +40,10 @@ const renderMiddleware = (req, res) => {
         hookRedux({ dispatch: store.dispatch })
     ];
 
-    ServerRouter.init({ path, routes, hooks: serverHooks, errors }).then(({ Router, routerProps, Component, componentProps, status, redirect }) => {
+    const ctx = new Context();
+    ctx.set('env', 'server');
+
+    ServerRouter.init({ path, routes, hooks: serverHooks, errors, ctx }).then(({ Router, routerProps, Component, componentProps, status, redirect }) => {
         if (redirect) {
             res.redirect(status, redirect);
         } else {
