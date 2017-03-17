@@ -5,14 +5,15 @@ import { BrowserRouter, Placeholder } from 'react-router-async';
 import { routes, hooks, createStore, Wrapper, errors } from './common';
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
-import { hookRedux } from 'hook-redux';
+import { firstHookRedux, lastHookRedux } from 'hook-redux';
 import { hookFetcher } from 'hook-fetcher';
 
 const store = createStore(window.__data);
 const clientHooks = [
+    firstHookRedux({ dispatch: store.dispatch }),
     ...hooks,
     hookFetcher({ helpers: { dispatch: store.dispatch }, noFirstFetch: true }),
-    hookRedux({ dispatch: store.dispatch })
+    lastHookRedux({ dispatch: store.dispatch })
 ];
 const history = createHistory({
     basename: '/universal'

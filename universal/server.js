@@ -5,7 +5,7 @@ import React, { Component, createFactory } from 'react';
 import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 import ReactDOM from 'react-dom/server';
 import assets from './../webpack-assets.json';
-import { hookRedux } from 'hook-redux';
+import { firstHookRedux, lastHookRedux } from 'hook-redux';
 import { hookFetcher } from 'hook-fetcher';
 import { Provider } from 'react-redux';
 import serialize from 'serialize-javascript';
@@ -35,9 +35,10 @@ const renderMiddleware = (req, res) => {
 
     const store = createStore();
     const serverHooks = [
+        firstHookRedux({ dispatch: store.dispatch }),
         ...hooks,
         hookFetcher({ helpers: { dispatch: store.dispatch } }),
-        hookRedux({ dispatch: store.dispatch })
+        lastHookRedux({ dispatch: store.dispatch })
     ];
 
     const ctx = new Context();
