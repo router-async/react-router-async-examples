@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { RootRoute, Route, Redirect, Link, RouterError, DynamicRedirect } from 'react-router-async';
-import { fetcher } from 'hook-fetcher';
 import fetch from 'isomorphic-fetch';
 import { createStore as _createStore, combineReducers, applyMiddleware } from 'redux';
 import { reducer as routerReducer } from 'hook-redux';
@@ -84,12 +83,6 @@ export class Wrapper extends Component {
     }
 }
 
-@fetcher([
-    {
-        promise: ({ helpers: { dispatch } }) => dispatch(requestUsers()),
-        deferred: true
-    }
-])
 @connect(state => ({
     data: state.data
 }))
@@ -110,12 +103,6 @@ class Users extends Component {
     }
 }
 
-@fetcher([
-    {
-        promise: ({ params, helpers: { dispatch } }) => dispatch(requestUser(params)),
-        critical: true
-    }
-])
 @connect(state => ({
     data: state.data
 }))
@@ -205,8 +192,18 @@ export const routes = (
         <Redirect path="/redirect" to="/redirect-next" />
         <Redirect path="/redirect-next" to="/param/123" />
         <Route path="/redirect-dynamic" action={() => new DynamicRedirect('/param/123')} />
-        <Route path="/users" action={() => Users} />
-        <Route path="/users/:login" action={() => User} />
+        <Route path="/users" fetcher={[
+            {
+                promise: ({ helpers: { dispatch } }) => dispatch(requestUsers()),
+                deferred: true
+            }
+        ]} action={() => Users} />
+        <Route path="/users/:login" fetcher={[
+            {
+                promise: ({ params, helpers: { dispatch } }) => dispatch(requestUser(params)),
+                critical: true
+            }
+        ]} action={() => User} />
         <Route path="/delayed-action-test" action={async () => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             return Test;
